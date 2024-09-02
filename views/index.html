@@ -2,35 +2,39 @@
 <html>
   <head>
     <title>Exercise Tracker | freeCodeCamp</title>
-    <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon.ico"  type="image/x-icon" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon.ico" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" type="text/css" />
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
     <div class="container">
-      <h1>Exercise tracker</h1>
-      <form action="/api/users" method="post">
+      <h1>Exercise Tracker</h1>
+      <form action="/api/users" method="post" class="form">
         <h2>Create a New User</h2>
         <p><code>POST /api/users</code></p>
-        <input id="uname" type="text" name="username" placeholder="username" />
-        <input type="submit" value="Submit" />
+        <input id="uname" type="text" name="username" placeholder="Username" />
+        <input type="submit" value="Create User" />
+        <button type="button" id="get-users" class="btn-get-users">Get All Users</button>
       </form>
-      <form action="/api/users/:_id/exercises" id="exercise-form" method="post">
-        <h2>Add exercises</h2>
+      <form action="/api/users/:_id/exercises" id="exercise-form" method="post" class="form">
+        <h2>Add Exercises</h2>
         <p><code>POST /api/users/:_id/exercises</code></p>
-        <input id="uid" type="text" name=":_id" placeholder=":_id" />
-        <input id="desc" type="text" name="description" placeholder="description*" />
-        <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
-        <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
-        <input type="submit" value="Submit" />
+        <input id="uid" type="text" name=":_id" placeholder="User ID" />
+        <input id="desc" type="text" name="description" placeholder="Description*" />
+        <input id="dur" type="text" name="duration" placeholder="Duration* (mins)" />
+        <input id="date" type="text" name="date" placeholder="Date (yyyy-mm-dd)" />
+        <input type="submit" value="Add Exercise" />
       </form>
-      <p>
-        <strong>GET user's exercise log: </strong>
-        <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
-      </p>
-      <p><strong>[ ]</strong> = optional</p>
-      <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+      <form id="get-log-form" class="form">
+        <h2>Get User's Exercise Log</h2>
+        <p><code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code></p>
+        <input id="log-uid" type="text" name=":_id" placeholder="User ID" required />
+        <input id="from-date" type="text" name="from" placeholder="From (yyyy-mm-dd)" />
+        <input id="to-date" type="text" name="to" placeholder="To (yyyy-mm-dd)" />
+        <input id="limit" type="text" name="limit" placeholder="Limit" />
+        <button type="button" id="get-log" class="btn-get-log">Get Log</button>
+      </form>
     </div>
     <script>
       const exerciseForm = document.getElementById("exercise-form");
@@ -40,6 +44,28 @@
         exerciseForm.action = `/api/users/${userId}/exercises`;
 
         exerciseForm.submit();
+      });
+
+      const getUsersButton = document.getElementById("get-users");
+
+      getUsersButton.addEventListener("click", () => {
+        window.location.href = "/api/users";
+      });
+
+      const getLogButton = document.getElementById("get-log");
+
+      getLogButton.addEventListener("click", () => {
+        const userId = document.getElementById("log-uid").value;
+        const fromDate = document.getElementById("from-date").value;
+        const toDate = document.getElementById("to-date").value;
+        const limit = document.getElementById("limit").value;
+
+        let query = `/api/users/${userId}/logs?`;
+        if (fromDate) query += `from=${fromDate}&`;
+        if (toDate) query += `to=${toDate}&`;
+        if (limit) query += `limit=${limit}`;
+
+        window.location.href = query;
       });
     </script>
   </body>
